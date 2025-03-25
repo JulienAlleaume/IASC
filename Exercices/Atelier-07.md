@@ -91,10 +91,84 @@ suse | CHANGED => {
 
 # Copier le fichier /etc/fstab du Control Host vers tous les Target Hosts sous forme d’un fichier /tmp/test3.txt.
 
+```sh
+[vagrant@ansible ema]$ ansible all -m copy -a "src=/etc/fstab dest=/tmp/test3.txt"
+debian | CHANGED => {
+    "changed": true,
+    "checksum": "d39263691e31170df199aae3d93f7c556fbb3446",
+    "dest": "/tmp/test3.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "b6f1fe0d790a8d2f9b74b95df1c889dc",
+    "mode": "0644",
+    "owner": "root",
+    "size": 743,
+    "src": "/home/vagrant/.ansible/tmp/ansible-tmp-1742920762.3082037-6017-11423982903663/source",
+    "state": "file",
+    "uid": 0
+}
+suse | CHANGED => {
+    "changed": true,
+    "checksum": "d39263691e31170df199aae3d93f7c556fbb3446",
+    "dest": "/tmp/test3.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "b6f1fe0d790a8d2f9b74b95df1c889dc",
+    "mode": "0644",
+    "owner": "root",
+    "size": 743,
+    "src": "/home/vagrant/.ansible/tmp/ansible-tmp-1742920762.0683994-6018-86253833779042/source",
+    "state": "file",
+    "uid": 0
+}
+rocky | CHANGED => {
+    "changed": true,
+    "checksum": "d39263691e31170df199aae3d93f7c556fbb3446",
+    "dest": "/tmp/test3.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "b6f1fe0d790a8d2f9b74b95df1c889dc",
+    "mode": "0644",
+    "owner": "root",
+    "secontext": "unconfined_u:object_r:user_home_t:s0",
+    "size": 743,
+    "src": "/home/vagrant/.ansible/tmp/ansible-tmp-1742920762.3524756-6016-192808515858620/source",
+    "state": "file",
+    "uid": 0
+}
+```
 
 # Supprimez le fichier /tmp/test3.txt sur les Target Hosts en utilisant le module file avec le paramètre state=absent.
-
+```sh
+[vagrant@ansible ema]$ ansible all -m file -a "path=/tmp/test3.txt state=absent"
+debian | CHANGED => {
+    "changed": true,
+    "path": "/tmp/test3.txt",
+    "state": "absent"
+}
+suse | CHANGED => {
+    "changed": true,
+    "path": "/tmp/test3.txt",
+    "state": "absent"
+}
+rocky | CHANGED => {
+    "changed": true,
+    "path": "/tmp/test3.txt",
+    "state": "absent"
+}
+```
 
 # Enfin, affichez l’espace utilisé par la partition principale sur tous les Target Hosts. Que remarquez-vous ?
 
-
+```sh
+ansible all -m command -a "df -h /"
+debian | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3       124G  2.3G  115G   2% /
+suse | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3       124G  2.9G  118G   3% /
+rocky | CHANGED | rc=0 >>
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/rl_rocky9-root   70G  2.4G   68G   4% /
+```
