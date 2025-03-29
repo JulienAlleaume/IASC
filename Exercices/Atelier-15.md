@@ -82,6 +82,55 @@
       when: ansible_os_family == 'RedHat' or ansible_os_family == 'Suse'
 ```
 
+## Test du playbook :
+```sh
+[vagrant@ansible ema]$ ansible-playbook chrony-01.yml
+PLAY [Install Chrony with package manager of hosts] *************************************************************************************************************************************************
+
+TASK [Gathering Facts]*************************************************************************************************************************************************
+ok: [debian]
+ok: [suse]
+ok: [ubuntu]
+ok: [rocky]
+TASK [Include vars]*************************************************************************************************************************************************
+ok: [rocky]
+ok: [debian]
+ok: [suse]
+ok: [ubuntu]
+TASK [Install chrony on Debian/Ubuntu] ************************************************************************************************************************************************
+ok: [debian]
+ok: [ubuntu]
+skipping: [suse]
+skipping: [rocky]
+TASK [Install chrony on RHEL based systems] ************************************************************************************************************************************************
+skipping: [debian]
+skipping: [ubuntu]
+skipping: [suse]
+ok: [rocky]
+TASK [Install chrony on SUSE based systems] ************************************************************************************************************************************************
+skipping: [debian]
+skipping: [ubuntu]
+ok: [suse]
+skipping: [rocky]
+TASK [Configure chrony on Debian/Ubuntu]*************************************************************************************************************************************************
+changed: [ubuntu]
+changed: [debian]
+skipping: [rocky]
+skipping: [suse]
+TASK [Configure chrony on RedHat/SUSE systems]*************************************************************************************************************************************************
+skipping: [ubuntu]
+skipping: [debian]
+changed: [rocky]
+changed: [suse]
+RUNNING HANDLER [restart chrony] ************************************************************************************************************************************************
+changed: [ubuntu]
+changed: [debian]
+changed: [rocky] 
+changed: [suse]
+```
+
+Tout c'est bien déroulé.
+
 
 ## Le deuxième playbook chrony-02.yml définira trois variables chrony_package, chrony_service et chrony_confdir et utilisera le module de gestion de paquets générique package.
 ```yml
@@ -123,4 +172,48 @@
         name: "{{ chrony_service }}"
         state: restarted
         enabled: yes
+```
+
+## Test du playbook :
+```sh
+[vagrant@ansible ema]$ ansible-playbook chrony-02.yml
+PLAY [Install Chrony with package manager of hosts] *************************************************************************************************************************************************
+
+TASK [Gathering Facts]*************************************************************************************************************************************************
+ok: [debian]
+ok: [suse]
+ok: [ubuntu]
+ok: [rocky]
+TASK [Include vars]*************************************************************************************************************************************************
+ok: [rocky]
+ok: [debian]
+ok: [suse]
+ok: [ubuntu]
+TASK [Install chrony on Dall hosts] ************************************************************************************************************************************************
+ok: [debian]
+ok: [ubuntu]
+ok: [suse]
+ok: [rocky]
+TASK [Configure chrony]*************************************************************************************************************************************************
+changed: [ubuntu]
+changed: [debian]
+changed: [rocky]
+changed: [suse]
+RUNNING HANDLER [restart chrony] ************************************************************************************************************************************************
+changed: [ubuntu]
+changed: [debian]
+changed: [rocky] 
+changed: [suse]
+PLAY RECAP *************************************************************************************************************************************************
+debian
+rocky
+suse
+ubuntu
+[vagrant@ansible ema] $
+: ok=5 changed=2 : ok=5 changed=2 : ok=5 changed=2 : ok=5 changed=2
+unreachable=0 failed=0 skipped=0 unreachable=0 failed=0 skipped=0 unreachable=0 failed=0 unreachable=0 failed=0
+rescued=0 ignored=0 rescued=0 skipped=0 rescued=0 skipped=0 rescued=0
+ignored=0
+ignored=0
+ignored=0
 ```
